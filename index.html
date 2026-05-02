@@ -1,165 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Builder</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Include html2pdf.js library -->
-    <script src = "main.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+</script>
 </head>
 <body>
-    <div class="container">
-        <div class="style-bar">
-            <h2>Template Settings</h2>
-            <label>
-                Font Type:
-                <select id="fontType">
-                    <option value="Arial">Arial</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                </select>
-            </label>
-            <label>
-                Line Spacing:
-                <select id="lineSpacing">
-                    <option value="1">1</option>
-                    <option value="1.5">1.5</option>
-                    <option value="2">2</option>
-                </select>
-            </label>
-            <label>
-                Font Size:
-                <input type="number" id="fontSize" value="16">
-            </label>
-            <label>
-                Title Style:
-                <select id="titleStyle">
-                    <option value="ruled">Ruled</option>
-                    <option value="shaded">Shaded</option>
-                </select>
-            </label>
-            <label>
-                Title Position:
-                <select id="titlePosition">
-                    <option value="above">Above Title</option>
-                    <option value="below">Below Title</option>
-                </select>
-            </label>
-            <button onclick="generatePDF()">Print as PDF</button>
-            <button id="toggleSectionsButton">Show/Hide Sections</button>
-            <div id="sectionsContainer" class="sections-container">
-                <label>
-                    <input type="checkbox" id="toggleEducation" checked> Education
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleTechSkills" checked> Technical Skills
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleExperience" checked> Experience
-                </label>
-                <label>
-                    <input type="checkbox" id="togglePositions" checked> Positions of Responsibility
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleAchievements" checked> Achievements
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleCourses" checked> Key Courses Taken
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleLinks" checked> Links
-                </label>
-                <label>
-                    <input type="checkbox" id="toggleHobbies" checked> Hobbies
-                </label>
-            </div>
+
+<!-- SETUP MODAL — shown when Ollama isn't running -->
+<div class="modal-backdrop" id="setup-modal">
+  <div class="modal">
+    <div class="modal-logo">Resume Studio</div>
+    <div class="modal-badge">Runs 100% locally · No API key · Free forever</div>
+
+    <h2>One-time setup required</h2>
+    <p>This app uses <strong>Ollama</strong> to run AI on your own machine — completely private, no internet needed after setup.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Run the setup script</strong> — opens a terminal, installs Ollama and downloads the AI model (~2 GB, once only)
+          <div class="cmd-block">
+            <code id="cmd-text">bash setup.sh</code>
+            <button class="copy-cmd" onclick="copyCmd()">Copy</button>
+          </div>
+          <span class="step-note">Open Terminal, navigate to this folder, paste and run</span>
         </div>
-        <div class="resume-container">
-            <div id="resume" class="resume">
-                <h1 contenteditable="true">Abc xyz</h1>
-                <hr class="section-separator">
-                <section id="education" contenteditable="true">
-                    <h2>Education</h2>
-                    <p>B.Tech-Computer Science and Engineering, National Institute of Technology, Warangal</p>
-                    <p>Aggregate CGPA: 8.0/10</p>
-                    <p>Expected Graduation: May 2020</p>
-                </section>
-                <hr class="section-separator">
-                <section id="techSkills" contenteditable="true">
-                    <h2>Technical Skills</h2>
-                    <p><strong>Programming Languages:</strong> C++, Python, Java *</p>
-                    <p><strong>Web Technologies:</strong> HTML, CSS, Javascript</p>
-                    <p><strong>Database Management:</strong> mySQL</p>
-                    <p><strong>Miscellaneous:</strong> Android programming *</p>
-                    <p><strong>Operating System:</strong> Windows, Linux</p>
-                    <p>* Elementary proficiency</p>
-                </section>
-                <hr class="section-separator">
-                <section id="experience" contenteditable="true">
-                    <h2>Experience</h2>
-                    <p>Software Engineering Intern, ThinkPedia LLP, Gurugram</p>
-                    <p>May 2019 - July 2019</p>
-                    <p>Worked on Customer Web Application for social media management.</p>
-                    <p>Developed frontend using Angular 7 & Bootstrap and backend Rest-APIs using Spring-boot & MongoDB.</p>
-                    <p>Worked in System Design, System Testing & API integration from scratch.</p>
-                </section>
-                <hr class="section-separator">
-                <section id="positions" contenteditable="true">
-                    <h2>Positions of Responsibility</h2>
-                    <p>XYZ Head, ABC 2016 (the annual XYZ of IIT Guwahati)</p>
-                    <p>City representative, New Delhi, ABC 2015</p>
-                </section>
-                <hr class="section-separator">
-                <section id="achievements" contenteditable="true">
-                    <h2>Achievements</h2>
-                    <p>ABC contest 2016: Secured 1st position in the National level contest.</p>
-                    <p>Joint Entrance Examination 2014: Secured All India Rank 1 among 0.15 million candidates appearing for the test.</p>
-                    <p>KVPY 2013-14: Obtained the National research fellowship scholarship by securing a position in top 1%.</p>
-                    <p>ABC Olympiad 2014: Qualified for the international stage by securing top position in following stages:</p>
-                    <ul>
-                        <li>Qualifiers stage: Bagged 20th position among 5000 candidates.</li>
-                        <li>National level: Bagged 7th position among 250 candidates.</li>
-                    </ul>
-                </section>
-                <hr class="section-separator">
-                <section id="courses" contenteditable="true">
-                    <h2>Key Courses Taken</h2>
-                    <ul>
-                        <li>Computer lab</li>
-                        <li>Process design</li>
-                        <li>Statistics *</li>
-                        <li>Advanced calculus</li>
-                        <li>XYZ architecture *</li>
-                        <li>ABC lab *</li>
-                    </ul>
-                    <p>* To be completed in Nov 2016</p>
-                </section>
-                <hr class="section-separator">
-                <section id="links" contenteditable="true">
-                    <h2>Links</h2>
-                    <ul>
-                    <li>GitHub://xyz</li>
-                    <li>Linkedin://xyz</li>
-                    <li>Medium://xyz</li>
-                    <li>CodeChef://xyz</li>
-                    <li>HackerRank://xyz</li>
-                    <li>Web-Page://xyz.github.io</li>
-                    </ul>
-                </section>
-                <hr class="section-separator">
-                <section id="hobbies" contenteditable="true">
-                    <h2>Hobbies</h2>
-                    <ul>
-                    <li>PHOTOGRAPHY</li>
-                    <li>QUORA WRITING</li>
-                    <li>VIDEO EDITING</li>
-                    <li>WATCHING STANDUP COMEDY</li>
-                </ul>
-                </section>
-            </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Reload this page</strong> once the script finishes — the app will connect automatically
         </div>
+      </div>
     </div>
-    <script src="main.js"></script>
+
+    <button class="modal-check-btn" onclick="checkOllamaAndProceed()">
+      I've run the script — Check connection →
+    </button>
+    <div id="check-status" class="check-status"></div>
+    <span class="modal-note">All AI runs locally on your computer. Nothing is sent to any server.</span>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app" style="display:none">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>Resume Studio</h1>
+      <p id="model-label">Local AI · llama3.2</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Upload Resume</div>
+      <div class="upload-zone" onclick="document.getElementById('upload-input').click()">
+        <input type="file" id="upload-input" accept=".pdf,.txt">
+        <div style="font-size:20px;margin-bottom:4px">↑</div>
+        <div>PDF or TXT</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">LinkedIn → Resume</div>
+      <textarea class="sb-input" id="linkedin-input" placeholder="Paste your LinkedIn 'About' or profile text here..."></textarea>
+      <button class="sb-btn primary" onclick="generateFromLinkedin()">Generate with AI ↗</button>
+    </div>
+
+    <div class="section">
+      <div class="section-label">ATS Score</div>
+      <textarea class="sb-input" id="jd-input" placeholder="Paste the job description here..."></textarea>
+      <button class="sb-btn primary" onclick="checkATS()">Analyze with AI ↗</button>
+
+      <div id="score-section" style="display:none;margin-top:10px">
+        <div class="score-ring">
+          <div class="ring-wrap">
+            <svg width="52" height="52" viewBox="0 0 52 52">
+              <circle cx="26" cy="26" r="20" fill="none" stroke="#e5e5e5" stroke-width="4"/>
+              <circle id="score-arc" cx="26" cy="26" r="20" fill="none" stroke="#111" stroke-width="4"
+                stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round"
+                style="transition:stroke-dashoffset 0.8s ease;transform:rotate(-90deg);transform-origin:center"/>
+            </svg>
+            <div class="ring-label" id="score-num">0%</div>
+          </div>
+          <div class="score-info">
+            <div class="score-title" id="score-grade">—</div>
+            <div class="score-sub" id="score-sub"></div>
+          </div>
+        </div>
+        <ul class="tips-list" id="tips-list"></ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Quick Actions</div>
+      <button class="sb-btn" onclick="improveWithAI()">✦ Polish &amp; Improve</button>
+      <button class="sb-btn" onclick="formatJakeStyle()">⬡ Jake Resume Format</button>
+      <button class="sb-btn" onclick="downloadPDF()"> ↓ Download PDF</button>
+    </div>
+
+    <div class="section ollama-status-bar">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Checking Ollama...</span>
+    </div>
+  </aside>
+
+  <div class="editor-area">
+    <div class="editor-toolbar">
+      <span class="toolbar-status" id="toolbar-status">Start by uploading a resume or pasting LinkedIn text</span>
+      <button class="tool-btn" onclick="clearDoc()">Clear</button>
+      <button class="tool-btn" onclick="copyText(event)">Copy</button>
+    </div>
+    <div class="resume-scroll">
+      <div id="resume-doc" contenteditable="true">
+        <div class="placeholder-msg" id="placeholder">
+          <div class="icon">📄</div>
+          <p>Your resume will appear here</p>
+          <em>Upload a file, paste LinkedIn text, or use the actions on the left</em>
+        </div>
+      </div>
+    </div>
+    <div class="ai-overlay" id="ai-overlay">
+      <div class="ai-spinner"></div>
+      <p id="overlay-msg">Thinking...</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

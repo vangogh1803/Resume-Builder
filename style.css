@@ -1,276 +1,513 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    height: 100vh;
+  font-family: 'Syne', sans-serif;
+  background: #f0efe9;
+}
+
+/* ── MODAL ── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,15,15,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 40px;
+  width: 480px;
+  max-width: 94vw;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+}
+
+.modal-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #111;
+  letter-spacing: -0.4px;
+}
+
+.modal-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 10px;
+  background: #edfaf3;
+  border: 1px solid #b6ecd1;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a8a50;
+  letter-spacing: 0.02em;
+}
+
+.modal h2 { font-size: 15px; font-weight: 600; color: #111; }
+
+.modal p { font-size: 13px; color: #666; line-height: 1.65; }
+.modal p strong { color: #111; }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 14px; }
+
+.step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  background: #111;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.step-body {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.step-body strong { color: #111; display: block; margin-bottom: 6px; }
+
+.cmd-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f4f0;
+  border: 1px solid #e5e4df;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0 4px;
+}
+
+.cmd-block code {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #111;
+  flex: 1;
+}
+
+.copy-cmd {
+  padding: 3px 10px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.copy-cmd:hover { background: #333; }
+
+.step-note { font-size: 11px; color: #aaa; }
+
+.modal-check-btn {
+  padding: 12px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.modal-check-btn:hover { background: #333; }
+
+.check-status {
+  font-size: 12px;
+  min-height: 16px;
+  text-align: center;
+}
+
+.check-status.error { color: #c0392b; }
+.check-status.ok    { color: #1a8a50; }
+
+.modal-note { font-size: 11px; color: #bbb; text-align: center; }
+
+/* ── APP ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 252px;
+  min-width: 252px;
+  background: #fafaf8;
+  border-right: 1px solid #e8e7e2;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid #e8e7e2;
+}
+
+.sidebar-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+.sidebar-header p { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+.section {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e8e7e2;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 8px;
+}
+
+.upload-zone {
+  border: 1.5px dashed #d5d4cf;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 12px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-zone:hover { border-color: #aaa; background: #f5f4f0; }
+
+#upload-input { display: none; }
+
+textarea.sb-input {
+  width: 100%;
+  height: 72px;
+  background: #fff;
+  border: 1px solid #e0dfd9;
+  border-radius: 8px;
+  color: #111;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  padding: 8px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+textarea.sb-input:focus { border-color: #bbb; }
+
+.sb-btn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #111;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.sb-btn:hover { background: #f5f4f0; }
+.sb-btn:active { transform: scale(0.99); }
+.sb-btn.primary {
+  background: #111; color: #fff;
+  border-color: #111; text-align: center;
+}
+.sb-btn.primary:hover { background: #333; }
+
+/* ATS ring */
+.score-ring { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.ring-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+.ring-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #111;
+}
+.score-info { flex: 1; }
+.score-title { font-size: 12px; font-weight: 600; color: #111; margin-bottom: 2px; }
+.score-sub { font-size: 10px; color: #888; line-height: 1.4; }
+
+.tips-list { list-style: none; margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.tips-list li {
+  font-size: 11px; color: #666; padding: 5px 8px;
+  background: #fff; border-radius: 6px;
+  border-left: 2px solid #ddd; line-height: 1.4;
+}
+
+/* Ollama status bar */
+.ollama-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid #e8e7e2;
+  border-bottom: none;
+  position: sticky;
+  bottom: 0;
+  background: #fafaf8;
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  flex-shrink: 0;
+  transition: background 0.4s;
+}
+
+.status-dot.online  { background: #2ecc71; box-shadow: 0 0 0 2px #c8f5dc; }
+.status-dot.offline { background: #e74c3c; box-shadow: 0 0 0 2px #fcd3d3; }
+
+#status-text { font-size: 11px; color: #aaa; }
+
+/* ── EDITOR ── */
+.editor-area {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden; position: relative;
+  height: 100vh;
+}
+
+.editor-toolbar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #e8e7e2;
+  background: #fafaf8;
+  flex-shrink: 0;
+}
+
+.toolbar-status { font-size: 11px; color: #aaa; flex: 1; }
+
+.tool-btn {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid #e0dfd9;
+  border-radius: 6px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; color: #888;
+  cursor: pointer; transition: all 0.15s;
+}
+.tool-btn:hover { background: #fff; color: #111; }
+
+.resume-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-bottom: 40px;
+}
+
+/* ── RESUME DOC — Jake Resume style ── */
+#resume-doc {
+  width: 794px;
+  min-height: 1123px;
+  background: #fff;
+  margin: 24px auto;
+  padding: 36px 52px;
+  box-sizing: border-box;
+  border: 1px solid #e5e4df;
+  border-radius: 6px;
+  flex-shrink: 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11pt;
+  color: #000;
+  line-height: 1.35;
+}
+#resume-doc:focus { box-shadow: 0 0 0 2px #e0dfd9; }
+
+/* Name */
+#resume-doc h1 {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 22pt;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0;
+  margin: 0 0 2px;
+  color: #000;
+}
+
+/* Contact */
+#resume-doc .contact-line {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 9.5pt;
+  color: #000;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* Section headings */
+#resume-doc h2 {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #000;
+  border-bottom: 1.5px solid #000;
+  padding-bottom: 1px;
+  margin: 10px 0 3px;
+  letter-spacing: 0;
+}
+
+/* Job row */
+#resume-doc .job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0;
+}
+#resume-doc .job-title {
+  font-weight: 700;
+  font-size: 11pt;
+  color: #000;
+}
+#resume-doc .job-date {
+  font-size: 11pt;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Company */
+#resume-doc .company {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11pt;
+  font-style: italic;
+  color: #000;
+  margin-bottom: 1px;
+}
+
+/* Bullets */
+#resume-doc ul {
+  padding-left: 18px;
+  margin: 1px 0 4px;
+  list-style-type: disc;
+}
+#resume-doc li {
+  margin-bottom: 1px;
+  font-size: 11pt;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* Skills — plain inline text, comma-separated, no chips */
+#resume-doc .skills-grid {
+  display: block;
+  margin-top: 2px;
+}
+#resume-doc .skill-pill {
+  display: inline;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 11pt;
+  color: #000;
+}
+#resume-doc .skill-pill + .skill-pill::before {
+  content: ', ';
+}
+
+.placeholder-msg { text-align: center; padding-top: 70px; }
+.placeholder-msg .icon { font-size: 36px; margin-bottom: 12px; }
+.placeholder-msg p  { font-size: 14px; color: #bbb; }
+.placeholder-msg em {
+  font-style: normal; font-size: 11px; color: #ccc;
+  display: block; margin-top: 6px;
+  max-width: 260px; margin-left: auto; margin-right: auto; line-height: 1.5;
+}
+
+/* ── AI OVERLAY ── */
+.ai-overlay {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.92);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px; z-index: 10;
+}
+.ai-overlay.active { display: flex; }
+.ai-spinner {
+  width: 22px; height: 22px;
+  border: 2px solid #ddd; border-top-color: #111;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-overlay p { font-size: 13px; color: #888; }
+
+.streaming-dot {
+  display: inline-block; width: 6px; height: 6px;
+  background: #ccc; border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+  margin-left: 4px; vertical-align: middle;
+}
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .sidebar,
+  .editor-toolbar {
+    display: none !important;
+  }
+
+  .resume-scroll {
+    display: block;
+    padding: 0;
+  }
+
+  #resume-doc {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
     margin: 0;
-    background-color: white;
-    justify-content: space-between;
-}
-
-.container {
-    display: flex;
-    width: 100%;
-}
-
-.settings-panel {
-    background-color: #3a6ea5;
-    padding: 20px;
-    width: 300px;
-    overflow-y: auto;
-    color: white;
-}
-
-.settings-panel h1,
-.settings-panel h2 {
-    margin-top: 0;
-    color: white;
-    text-align: center;
-}
-
-.settings-panel label {
-    display: block;
-    margin: 10px 0 5px;
-    color: white;
-}
-
-.settings-panel input,
-.settings-panel select,
-.settings-panel button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
     border: none;
-    border-radius: 5px;
+    box-shadow: none;
+  }
 }
-
-.settings-panel button {
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    text-transform: uppercase;
-}
-
-.settings-panel button:hover {
-    background-color: #45a049;
-}
-
-.settings-panel .toggle-button {
-    background-color: #007bff;
-    margin-bottom: 10px;
-}
-
-#show-hide-options {
-    margin-top: 10px;
-    display: none;
-}
-
-.settings-panel input[type="number"] {
-    background-color: #444;
-    color: white;
-    text-align: center;
-}
-
-.settings-panel select {
-    background-color: #444;
-    color: white;
-}
-
-.settings-panel .options-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.settings-panel .options-grid div {
-    background-color: #444;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    text-align: center;
-}
-
-.settings-panel .options-grid div.selected {
-    background-color: #f44336;
-}
-
-.resume-input {
-    background-color: #3a6ea5;
-    padding: 20px;
-    width: 300px;
-    overflow-y: auto;
-}
-
-.resume-input h2 {
-    margin-top: 0;
-}
-
-.resume-input label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-.resume-input input,
-.resume-input textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 5px;
-}
-
-.resume-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    background-color: #f9f9f9;
-}
-
-.resume {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.resume h1 {
-    text-align: center;
-    font-size: 36px;
-    margin: 20px 0 0 0;
-    color: #333;
-}
-
-.resume p,
-.resume div {
-    font-size: 18px;
-    margin: 10px 0;
-    line-height: 1.5;
-    color: black;
-}
-
-.resume div {
-    white-space: pre-wrap;
-}
-
-/* Heading Styles */
-.ruled-above::before {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: black;
-    margin-bottom: 5px;
-}
-
-.ruled-below::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: black;
-    margin-top: 5px;
-}
-
-.shaded {
-    background-color: #595656;
-    padding: 2px 5px;
-    margin: 10px 0;
-}
-
-.settings-panel .section-toggle {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.style-bar {
-    width: 250px;
-    background-color: #6a1b9a;
-    color: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.style-bar h2, .style-bar h3 {
-    margin-top: 0;
-}
-
-.style-bar label {
-    display: block;
-    margin-bottom: 15px;
-}
-
-.style-bar select,
-.style-bar input {
-    display: block;
-    width: 100%;
-    margin-top: 5px;
-    padding: 5px;
-}
-
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #6a1b9a;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #4a148c;
-}
-
-.sections-container {
-    display: none;
-    margin-top: 20px;
-}
-
-.sections-container label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.section-separator {
-    border: 0;
-    border-top: 2px solid #ddd;
-    margin: 20px 0;
-}
-
-.ruled h2 {
-    border-bottom: 1px solid black;
-    padding-bottom: 5px;
-}
-
-.shaded h2 {
-    background-color: #ddd;
-    padding: 5px;
-    margin: 0 -20px; /* Adjust for padding */
-    padding: 5px 20px;
-}
-
-.above-title .section-separator {
-    order: 0;
-}
-
-.above-title h2 {
-    order: 1;
-}
-
-.below-title h2 {
-    order: 0;
-}
-
-.below-title .section-separator {
-    order: 1;
-}
+/* ── PDF clone overrides — applied to the off-screen clone during export ── */
+#resume-doc h1    { font-size: 22pt !important; text-align: center !important; margin-bottom: 2px !important; }
+#resume-doc .contact-line { font-size: 9.5pt !important; text-align: center !important; }
+#resume-doc h2    { font-size: 11pt !important; font-weight: 700 !important; border-bottom: 1.5px solid #000 !important; margin: 10px 0 3px !important; }
+#resume-doc .job-title { font-size: 11pt !important; font-weight: 700 !important; }
+#resume-doc .job-date  { font-size: 11pt !important; }
+#resume-doc .company   { font-size: 11pt !important; font-style: italic !important; }
+#resume-doc li    { font-size: 11pt !important; line-height: 1.3 !important; }
+#resume-doc .skill-pill { font-size: 11pt !important; display: inline !important; background: none !important; border: none !important; padding: 0 !important; }
